@@ -1,13 +1,17 @@
-from typing import List, Type, TypeVar, Generic, Optional, Dict, Any
+from typing import Type, Optional, Dict, Any
 from requests import Session
 from logging import Logger, getLogger
 from pydantic import BaseModel, validate_call
 from time import time
 
+from ponika.endpoints.dhcp import DhcpEndpoint
 from ponika.endpoints.gps import GpsEndpoint
+from ponika.endpoints.internet_connection import InternetConnectionEndpoint
 from ponika.endpoints.messages import MessagesEndpoint
 from ponika.endpoints.session import SessionEndpoint
+from ponika.endpoints.tailscale import TailscaleEndpoint
 from ponika.endpoints.unauthorized import UnauthorizedEndpoint
+from ponika.endpoints.wireless import WirelessEndpoint
 from ponika.models import T, ApiResponse, Token
 
 
@@ -17,15 +21,17 @@ class PonikaClient:
         host: str,
         username: str,
         password: str,
-        port: int = 443,
-        use_tls: bool = True,
+        port: int | None = None,
+        tls: bool = True,
+        verify_tls: bool = True,
     ) -> None:
         self.username = username
         self.password = password
         self.host = host
-        self.port = port
-        self.use_tls = use_tls
-        self.base_url = f"{'https' if use_tls else 'http'}://{host}:{port}/api"
+        self.port = port or (443 if tls else 80)
+        self.tls = tls
+        self.verify_tls = verify_tls
+        self.base_url = f"{'https' if tls else 'http'}://{self.host}:{self.port}/api"
 
         self.request: Session = Session()
         self.logger: Logger = getLogger(__name__)
@@ -36,6 +42,10 @@ class PonikaClient:
         self.session = SessionEndpoint(self)
         self.messages = MessagesEndpoint(self)
         self.gps = GpsEndpoint(self)
+        self.dhcp = DhcpEndpoint(self)
+        self.tailscale = TailscaleEndpoint(self)
+        self.wireless = WirelessEndpoint(self)
+        self.internet_connection = InternetConnectionEndpoint(self)
 
     def get_auth_token(self) -> Optional[str]:
         """Get the current authentication token."""
@@ -67,7 +77,7 @@ class PonikaClient:
 
         response = self.request.get(
             f"{self.base_url}{endpoint}",
-            verify=False,
+            verify=self.verify_tls,
             params=params,
             headers=({"Authorization": f"Bearer {auth_token}"} if auth_token else None),
         )
@@ -87,7 +97,7 @@ class PonikaClient:
 
         response = self.request.post(
             f"{self.base_url}{endpoint}",
-            verify=False,
+            verify=self.verify_tls,
             json=params,
             headers=({"Authorization": f"Bearer {auth_token}"} if auth_token else None),
         )

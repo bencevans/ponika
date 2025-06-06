@@ -24,7 +24,7 @@ class ApiResponse(BaseModel, Generic[T]):
 
 
 class Token(BaseModel):
-    """Data model for token response."""
+    """Data model for token storage."""
 
     token: str
     expires_at: int
