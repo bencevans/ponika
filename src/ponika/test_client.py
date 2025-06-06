@@ -1,5 +1,7 @@
+import os
 from ponika import PonikaClient
 from os import environ
+import pytest
 
 TELTONIKA_HOST = environ.get("TELTONIKA_HOST")
 TELTONIKA_USERNAME = environ.get("TELTONIKA_USERNAME")
@@ -49,3 +51,23 @@ def test_client_gps_position_get_status():
 
     gps_status_response = create_client().gps.position.get_status()
     assert gps_status_response.success
+
+
+def test_client_messages_get_status():
+    """Test the messages status functionality of the PonikaClient."""
+
+    messages_status_response = create_client().messages.get_status()
+    assert messages_status_response.success
+
+
+@pytest.mark.skipif(
+    os.getenv("MOBILE_NUMBER") is None,
+    reason="Mobile number ($MOBILE_NUMBER) required for this test",
+)
+def test_client_messages_actions_post_send():
+    """Test the messages actions send functionality of the PonikaClient."""
+
+    messages_actions_send_response = create_client().messages.actions.post_send(
+        number=str(os.getenv("MOBILE_NUMBER")), message="Hello, World!", modem="2-1"
+    )
+    assert messages_actions_send_response.success
