@@ -11,7 +11,7 @@ class TeltonikaApiError(BaseModel):
     code: int
     error: str
     source: str
-    section: str
+    section: Optional[str] = None
 
     def __str__(self) -> str:
         return f"Error {self.code}: {self.error} ({self.source}, {self.section})"

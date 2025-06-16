@@ -21,15 +21,15 @@ class WirelessEndpoint:
 
             class Client(BaseModel):
                 """Data model for wireless client information."""
-                expires: int
+                expires: Optional[int] = None
                 band: str
-                ipaddr: str
+                ipaddr: Optional[str] = None
                 hostname: Optional[str] = None
                 tx_rate: int
                 macaddr: str
                 rx_rate: int
                 signal: str
-                interface: str
+                interface: Optional[str] = None
                 device: str
 
             wifi_id: str
