@@ -144,3 +144,13 @@ def test_client_internet_connection_get_status():
     )
     assert internet_status_response.success
     assert internet_status_response.data
+
+
+def test_client_ip_routes_ipv4_get_status():
+    """Test the IPv4 routes status functionality of the PonikaClient."""
+
+    ipv4_routes_status_response = device_doesnt_support_skipper(
+        create_client().ip_routes.ipv4.get_status()
+    )
+    assert ipv4_routes_status_response.success
+    assert ipv4_routes_status_response.data
