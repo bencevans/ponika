@@ -154,3 +154,23 @@ def test_client_ip_routes_ipv4_get_status():
     )
     assert ipv4_routes_status_response.success
     assert ipv4_routes_status_response.data
+
+
+def test_client_ip_neighbours_ipv4_get_status():
+    """Test the IPv4 neighbours status functionality of the PonikaClient."""
+
+    ipv4_neighbours_status_response = device_doesnt_support_skipper(
+        create_client().ip_neighbors.ipv4.get_status()
+    )
+    assert ipv4_neighbours_status_response.success
+    assert ipv4_neighbours_status_response.data
+
+
+def test_client_ip_neighbours_ipv6_get_status():
+    """Test the IPv6 neighbours status functionality of the PonikaClient."""
+
+    ipv6_neighbours_status_response = device_doesnt_support_skipper(
+        create_client().ip_neighbors.ipv6.get_status()
+    )
+    assert ipv6_neighbours_status_response.success
+    assert ipv6_neighbours_status_response.data

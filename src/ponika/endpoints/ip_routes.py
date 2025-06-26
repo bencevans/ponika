@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import List, Optional
 from pydantic import BaseModel
 from typing import TYPE_CHECKING
 
@@ -32,7 +32,6 @@ class IpRoutesEndpoint:
 
         def get_status(self) -> "ApiResponse[List[Ipv4RouteResponseDataItem]]":
             """Fetch IPv4 routes from the device."""
-            print(self.client._get("/ip_routes/ipv4/status"))
             return ApiResponse[List[self.Ipv4RouteResponseDataItem]].model_validate(
                 self.client._get("/ip_routes/ipv4/status")
             )

@@ -7,6 +7,7 @@ from time import time
 from ponika.endpoints.dhcp import DhcpEndpoint
 from ponika.endpoints.gps import GpsEndpoint
 from ponika.endpoints.internet_connection import InternetConnectionEndpoint
+from ponika.endpoints.ip_neighbors import IpNeighborsEndpoint
 from ponika.endpoints.ip_routes import IpRoutesEndpoint
 from ponika.endpoints.messages import MessagesEndpoint
 from ponika.endpoints.session import SessionEndpoint
@@ -48,6 +49,7 @@ class PonikaClient:
         self.wireless = WirelessEndpoint(self)
         self.internet_connection = InternetConnectionEndpoint(self)
         self.ip_routes = IpRoutesEndpoint(self)
+        self.ip_neighbors = IpNeighborsEndpoint(self)
 
     def get_auth_token(self) -> Optional[str]:
         """Get the current authentication token."""
