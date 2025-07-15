@@ -174,3 +174,14 @@ def test_client_ip_neighbours_ipv6_get_status():
     )
     assert ipv6_neighbours_status_response.success
     assert ipv6_neighbours_status_response.data
+
+
+def test_client_modems_get_status():
+    """Test the modems status functionality of the PonikaClient."""
+
+    modems_status_response = device_doesnt_support_skipper(
+        create_client().modems.get_status()
+    )
+    print(modems_status_response)
+    assert modems_status_response.success
+    assert modems_status_response.data

@@ -10,6 +10,7 @@ from ponika.endpoints.internet_connection import InternetConnectionEndpoint
 from ponika.endpoints.ip_neighbors import IpNeighborsEndpoint
 from ponika.endpoints.ip_routes import IpRoutesEndpoint
 from ponika.endpoints.messages import MessagesEndpoint
+from ponika.endpoints.modems import ModemsEndpoint
 from ponika.endpoints.session import SessionEndpoint
 from ponika.endpoints.tailscale import TailscaleEndpoint
 from ponika.endpoints.unauthorized import UnauthorizedEndpoint
@@ -50,6 +51,7 @@ class PonikaClient:
         self.internet_connection = InternetConnectionEndpoint(self)
         self.ip_routes = IpRoutesEndpoint(self)
         self.ip_neighbors = IpNeighborsEndpoint(self)
+        self.modems = ModemsEndpoint(self)
 
     def get_auth_token(self) -> Optional[str]:
         """Get the current authentication token."""
