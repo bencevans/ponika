@@ -10,12 +10,12 @@ if TYPE_CHECKING:
 
 class IpRoutesEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
         self.ipv4 = self.Ipv4RoutesEndpoint(client)
 
     class Ipv4RoutesEndpoint:
         def __init__(self, client: "PonikaClient") -> None:
-            self.client: "PonikaClient" = client
+            self._client: "PonikaClient" = client
 
         class Ipv4RouteResponseDataItem(BaseModel):
             """Data model for IPv4 route response."""
@@ -33,5 +33,5 @@ class IpRoutesEndpoint:
         def get_status(self) -> "ApiResponse[List[Ipv4RouteResponseDataItem]]":
             """Fetch IPv4 routes from the device."""
             return ApiResponse[List[self.Ipv4RouteResponseDataItem]].model_validate(
-                self.client._get("/ip_routes/ipv4/status")
+                self._client._get("/ip_routes/ipv4/status")
             )

@@ -10,17 +10,17 @@ if TYPE_CHECKING:
 
 class DhcpEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
         self.leases = self.DhcpLeasesEndpoint(client)
 
     class DhcpLeasesEndpoint:
         def __init__(self, client: "PonikaClient") -> None:
-            self.client: "PonikaClient" = client
+            self._client: "PonikaClient" = client
             self.ipv4 = self.DhcpLeasesIpv4Endpoint(client)
 
         class DhcpLeasesIpv4Endpoint:
             def __init__(self, client: "PonikaClient") -> None:
-                self.client: "PonikaClient" = client
+                self._client: "PonikaClient" = client
 
             class DhcpLeasesIpv4ResponseDataItem(BaseModel):
                 """Data model for IPv4 DHCP leases response."""
@@ -46,4 +46,4 @@ class DhcpEndpoint:
                 """Fetch IPv4 DHCP leases from the device."""
                 return ApiResponse[
                     list[self.DhcpLeasesIpv4ResponseDataItem]
-                ].model_validate(self.client._get("/dhcp/leases/ipv4/status"))
+                ].model_validate(self._client._get("/dhcp/leases/ipv4/status"))

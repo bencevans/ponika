@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class TailscaleEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
 
     class TailscaleConfigResponseDataItem(BaseModel):
         """Data model for Tailscale configuration response."""
@@ -29,7 +29,7 @@ class TailscaleEndpoint:
     def get_config(self) -> "ApiResponse[List[TailscaleConfigResponseDataItem]]":
         """Fetch Tailscale configuration from the device."""
         return ApiResponse[List[self.TailscaleConfigResponseDataItem]].model_validate(
-            self.client._get("/tailscale/config")
+            self._client._get("/tailscale/config")
         )
 
     class TailscaleStatusResponseDataItem(BaseModel):
@@ -43,5 +43,5 @@ class TailscaleEndpoint:
     def get_status(self) -> "ApiResponse[List[TailscaleStatusResponseDataItem]]":
         """Fetch Tailscale status from the device."""
         return ApiResponse[List[self.TailscaleStatusResponseDataItem]].model_validate(
-            self.client._get("/tailscale/status")
+            self._client._get("/tailscale/status")
         )

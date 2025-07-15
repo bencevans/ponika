@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class InternetConnectionEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
 
     class InternetStatusResponseData(BaseModel):
         """Data model for Internet status response."""
@@ -25,5 +25,5 @@ class InternetConnectionEndpoint:
     def get_status(self) -> "ApiResponse[InternetStatusResponseData]":
         """Fetch Internet status from the device."""
         return ApiResponse[self.InternetStatusResponseData].model_validate(
-            self.client._get("/internet_connection/status")
+            self._client._get("/internet_connection/status")
         )

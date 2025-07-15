@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 class UnauthorizedEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
 
     class UnauthorizedStatusResponseData(BaseModel):
         """Data model for GET /unauthorized/status response."""
@@ -20,9 +20,9 @@ class UnauthorizedEndpoint:
 
     def get_status(self) -> "ApiResponse[UnauthorizedStatusResponseData]":
         """Fetch unauthorized status from the device."""
-        self.client.logger.info("Accessing unauthorized endpoint...")
+        self._client.logger.info("Accessing unauthorized endpoint...")
         return ApiResponse[self.UnauthorizedStatusResponseData].model_validate(
-            self.client._get(
+            self._client._get(
                 "/unauthorized/status",
             )
         )

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class GpsEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
         self.position = self.GpsPositionEndpoint(client)
 
     class GetGlobalResponseData(BaseModel):
@@ -28,7 +28,7 @@ class GpsEndpoint:
     def get_global(self) -> "ApiResponse[GetGlobalResponseData]":
         """Fetch global GPS config."""
         return ApiResponse[self.GetGlobalResponseData].model_validate(
-            self.client._get("/gps/global")
+            self._client._get("/gps/global")
         )
 
     class GpsStatusResponseData(BaseModel):
@@ -40,12 +40,12 @@ class GpsEndpoint:
     def get_status(self) -> "ApiResponse[GpsStatusResponseData]":
         """Fetch GPS status from the device."""
         return ApiResponse[self.GpsStatusResponseData].model_validate(
-            self.client._get("/gps/status")
+            self._client._get("/gps/status")
         )
 
     class GpsPositionEndpoint:
         def __init__(self, client: "PonikaClient") -> None:
-            self.client: "PonikaClient" = client
+            self._client: "PonikaClient" = client
 
         class GpsPositionResponseData(BaseModel):
             """Data model for GET /gps/position/status response."""
@@ -65,5 +65,5 @@ class GpsEndpoint:
             """Fetch GPS position status from the device."""
 
             return ApiResponse[self.GpsPositionResponseData].model_validate(
-                self.client._get("/gps/position/status")
+                self._client._get("/gps/position/status")
             )

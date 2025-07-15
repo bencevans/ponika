@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class MessagesEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
         self.actions = self.MessagesActionsEndpoint(client)
 
     class MessagesResponseDataItem(BaseModel):
@@ -26,14 +26,14 @@ class MessagesEndpoint:
     def get_status(self) -> "ApiResponse[List[MessagesResponseDataItem]]":
         """Fetch messages from the device."""
         return ApiResponse[List[self.MessagesResponseDataItem]].model_validate(
-            self.client._get(
+            self._client._get(
                 "/messages/status",
             )
         )
 
     class MessagesActionsEndpoint:
         def __init__(self, client: "PonikaClient") -> None:
-            self.client: "PonikaClient" = client
+            self._client: "PonikaClient" = client
 
         class SendResponseData(BaseModel):
             """Data model for messages action response."""
@@ -44,7 +44,7 @@ class MessagesEndpoint:
             self, number: str, message: str, modem: str
         ) -> "ApiResponse[SendResponseData]":
             """Send a message to a recipient."""
-            return self.client._post(
+            return self._client._post(
                 "/messages/actions/send",
                 self.SendResponseData,
                 {"data": {"number": number, "message": message, "modem": modem}},

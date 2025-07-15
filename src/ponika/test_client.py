@@ -182,6 +182,5 @@ def test_client_modems_get_status():
     modems_status_response = device_doesnt_support_skipper(
         create_client().modems.get_status()
     )
-    print(modems_status_response)
     assert modems_status_response.success
     assert modems_status_response.data

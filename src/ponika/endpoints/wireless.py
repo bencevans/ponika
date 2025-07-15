@@ -9,12 +9,12 @@ if TYPE_CHECKING:
 
 class WirelessEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
         self.interfaces = self.InterfacesEndpoint(client)
 
     class InterfacesEndpoint:
         def __init__(self, client: "PonikaClient") -> None:
-            self.client: "PonikaClient" = client
+            self._client: "PonikaClient" = client
 
         class InterfacesResponseDataItem(BaseModel):
             """Data model for wireless interfaces response."""
@@ -54,5 +54,5 @@ class WirelessEndpoint:
         def get_status(self) -> "ApiResponse[list[InterfacesResponseDataItem]]":
             """Fetch wireless interfaces status from the device."""
             return ApiResponse[list[self.InterfacesResponseDataItem]].model_validate(
-                self.client._get("/wireless/interfaces/status")
+                self._client._get("/wireless/interfaces/status")
             )

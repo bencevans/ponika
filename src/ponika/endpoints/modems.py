@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class ModemsEndpoint:
     def __init__(self, client: "PonikaClient") -> None:
-        self.client: "PonikaClient" = client
+        self._client: "PonikaClient" = client
 
     class GetModemsStatusOffline(BaseModel):
         """Data model for GET /modems/status response when modem is offline."""
@@ -144,4 +144,4 @@ class ModemsEndpoint:
         """Fetch global GPS config."""
         return ApiResponse[
             List[self.GetModemsStatusOnline | self.GetModemsStatusOffline]
-        ].model_validate(self.client._get("/modems/status"))
+        ].model_validate(self._client._get("/modems/status"))

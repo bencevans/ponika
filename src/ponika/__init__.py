@@ -18,6 +18,27 @@ from ponika.endpoints.wireless import WirelessEndpoint
 from ponika.models import T, ApiResponse, Token
 
 
+class ClientConfig(BaseModel):
+    """Configuration for PonikaClient."""
+
+    host: str
+    username: str
+    password: str
+    port: Optional[int] = None
+    tls: bool = True
+    verify_tls: bool = True
+
+    @property
+    def resolved_port(self) -> int:
+        return self.port or (443 if self.tls else 80)
+
+    @property
+    def base_url(self) -> str:
+        return (
+            f"{'https' if self.tls else 'http'}://{self.host}:{self.resolved_port}/api"
+        )
+
+
 class PonikaClient:
     def __init__(
         self,
@@ -28,16 +49,17 @@ class PonikaClient:
         tls: bool = True,
         verify_tls: bool = True,
     ) -> None:
-        self.username = username
-        self.password = password
-        self.host = host
-        self.port = port or (443 if tls else 80)
-        self.tls = tls
-        self.verify_tls = verify_tls
-        self.base_url = f"{'https' if tls else 'http'}://{self.host}:{self.port}/api"
+        self._config = ClientConfig(
+            host=host,
+            username=username,
+            password=password,
+            port=port,
+            tls=tls,
+            verify_tls=verify_tls,
+        )
 
-        self.request: Session = Session()
-        self.logger: Logger = getLogger(__name__)
+        self._request: Session = Session()
+        self._logger: Logger = getLogger(__name__)
 
         self.auth: None | Token = None
 
@@ -53,12 +75,12 @@ class PonikaClient:
         self.ip_neighbors = IpNeighborsEndpoint(self)
         self.modems = ModemsEndpoint(self)
 
-    def get_auth_token(self) -> Optional[str]:
+    def _get_auth_token(self) -> Optional[str]:
         """Get the current authentication token."""
         if self.auth and self.auth.expires_at > int(time()):
             return self.auth.token
 
-        auth_response = self.login(self.username, self.password)
+        auth_response = self.login(self._config.username, self._config.password)
 
         self.auth = (
             Token(
@@ -77,13 +99,13 @@ class PonikaClient:
         params: Optional[Dict[str, Any]] = None,
         auth_required: bool = True,
     ) -> object:
-        self.logger.info("Making GET request to: %s", endpoint)
+        self._logger.info("Making GET request to: %s", endpoint)
 
-        auth_token = self.get_auth_token() if auth_required else None
+        auth_token = self._get_auth_token() if auth_required else None
 
-        response = self.request.get(
-            f"{self.base_url}{endpoint}",
-            verify=self.verify_tls,
+        response = self._request.get(
+            f"{self._config.base_url}{endpoint}",
+            verify=self._config.verify_tls,
             params=params,
             headers=({"Authorization": f"Bearer {auth_token}"} if auth_token else None),
         )
@@ -97,13 +119,13 @@ class PonikaClient:
         params: Optional[Dict[str, Any]] = None,
         auth_required: bool = True,
     ) -> ApiResponse[T]:
-        self.logger.info("Making POST request to: %s", endpoint)
+        self._logger.info("Making POST request to: %s", endpoint)
 
-        auth_token = self.get_auth_token() if auth_required else None
+        auth_token = self._get_auth_token() if auth_required else None
 
-        response = self.request.post(
-            f"{self.base_url}{endpoint}",
-            verify=self.verify_tls,
+        response = self._request.post(
+            f"{self._config.base_url}{endpoint}",
+            verify=self._config.verify_tls,
             json=params,
             headers=({"Authorization": f"Bearer {auth_token}"} if auth_token else None),
         )
@@ -120,7 +142,7 @@ class PonikaClient:
     @validate_call
     def login(self, username: str, password: str) -> ApiResponse[LoginResponseData]:
         """Login to the Ponika API and retrieve a token."""
-        self.logger.info("Logging in with username: %s", username)
+        self._logger.info("Logging in with username: %s", username)
         response = self._post(
             "/login",
             self.LoginResponseData,
@@ -137,5 +159,5 @@ class PonikaClient:
 
     def logout(self) -> ApiResponse[LogoutResponseData]:
         """Logout from the Ponika API."""
-        self.logger.info("Logging out...")
+        self._logger.info("Logging out...")
         return self._post("/logout", self.LogoutResponseData)
