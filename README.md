@@ -101,3 +101,15 @@ export MOBILE_NUMBER=441234567890
 # Run the tests
 uv run pytest
 ```
+
+## Documentation
+
+The project includes MkDocs documentation with API reference pages generated from the codebase.
+
+```bash
+# Run local docs server
+uv run mkdocs serve
+
+# Build static docs
+uv run mkdocs build --strict
+```

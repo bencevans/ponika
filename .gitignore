@@ -8,3 +8,11 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Documentation build output
+site/
+
+# Auto-generated docs
+docs/reference/index.md
+docs/reference/endpoints/index.md
+docs/reference/endpoints/*.md

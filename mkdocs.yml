@@ -1,0 +1,51 @@
+site_name: Ponika
+site_description: Python client for Teltonika devices
+repo_url: "https://github.com/bencevans/ponika"
+docs_dir: docs
+
+theme:
+  name: shadcn
+  show_title: true # show the title in the top bar
+  show_stargazers: true # show the stargazers in the top bar
+  pygments_style: # default styles 
+        light: shadcn-light
+        dark: github-dark
+  icon: heroicons:wifi # use the shadcn svg if not defined
+  topbar_sections: false # NEW!
+  github:
+    repo: ben/ponika
+    branch: main
+
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - src
+          options:
+            docstring_style: google
+            separate_signature: true
+            show_signature_annotations: true
+            show_source: false
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - codehilite
+  - pymdownx.blocks.tab
+
+hooks:
+  - docs/hooks.py
+
+nav:
+  - Home: index.md
+  - Guides:
+      - guides/getting-started.md
+      - guides/endpoint-patterns.md
+      - guides/contributing.md
+  - API Reference:
+      - Overview: reference/index.md
+      - Endpoints: reference/endpoints/index.md
