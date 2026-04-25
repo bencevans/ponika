@@ -1,12 +1,15 @@
 # Ponika
 
-Ponika is a Python library for interacting with the Teltonika devices.
+Ponika is a Python library for interacting with Teltonika devices.  
+The compatibility is tested with RUT devices.
 
 ## supported Endpoints
 
 | Modul | Endpoint | Status |
 | ----- | -------- | ------ |
+| Auto Reboot |  | ⭕ |
 | Backup |  | ✅ |
+| Call | Util Setup | ⭕ |
 | Data Usages  | SIM Card | ✅ |
 | Data Usages  | Modem | ⭕ |
 | Data Usages  | eSIM | ❌ |
@@ -27,6 +30,7 @@ Ponika is a Python library for interacting with the Teltonika devices.
 | OpenVPN |  | ⭕ |
 | SMS | Send | ✅ |
 | SMS | Read/Delete | ✅ |
+| SMS | Command Setup | ⭕ |
 | Tailscale |  | ⚠️ |
 | Usermanagement  | - | ✅ |
 | Wireguard |  | ✅ |
