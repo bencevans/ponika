@@ -7,7 +7,8 @@ The compatibility is tested with RUT devices.
 
 | Modul | Endpoint | Status |
 | ----- | -------- | ------ |
-| Auto Reboot |  | ⭕ |
+| Auto Reboot | Scheduler | ✅ |
+| Auto Reboot | Ping/Wget | ✅ |
 | Backup |  | ✅ |
 | Call | Util Setup | ⭕ |
 | Data Usages  | SIM Card | ✅ |
