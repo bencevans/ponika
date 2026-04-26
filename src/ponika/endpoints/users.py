@@ -49,3 +49,4 @@ class UsersEndpoint(
 
     config_response_model = UserConfigResponse
     delete_reponse_model = UserDeleteResponse
+    config_match_fields = ('id', 'username')

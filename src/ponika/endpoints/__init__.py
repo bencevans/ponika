@@ -272,6 +272,9 @@ class CRUDEndpoint(
     ],
 ):
     endpoint_path: str
+    create_model: Type[TItemCreatePayload]
+    config_id_field: str = 'id'
+    config_match_fields: tuple[str, ...] = ('id', 'name')
 
 
 class DynamicPathCRUDEndpoint(

@@ -29,6 +29,7 @@ from ponika.endpoints.unauthorized import UnauthorizedEndpoint
 from ponika.endpoints.wireguard import WireguardEndpoint
 from ponika.endpoints.wireless import WirelessEndpoint
 from ponika.endpoints.zerotier import ZerotierEndpoint
+from ponika.config import ConfigApplier
 from ponika.models import T, ApiResponse, BasePayload, Token, BaseModel
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -97,6 +98,7 @@ class PonikaClient:
         self.users = UsersEndpoint(self)
         self.data_usage = DataUsageEndpoint(self)
         self.recipients = RecipientsEndpoint(self)
+        self.config = ConfigApplier(self)
 
     def _get_auth_token(self) -> Optional[str]:
         """Get the current authentication token."""

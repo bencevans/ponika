@@ -109,6 +109,8 @@ class RulesEndpoint(
     bulk_update_strip_item_id = False
     allow_bulk_delete = True
 
+    config_match_fields = ('id', 'smstext')
+
     def get_options(self) -> SmsRuleOptionsResponse:
         response = self._client._get('/sms_utilities/rules/options')
         response_obj = ApiResponse[SmsRuleOptionsResponse].model_validate(

@@ -157,7 +157,7 @@ class InterfacesEndpoint(
     status_endpoint_path = '/wireless/interfaces/status'
 
     config_response_model = WirelessInterfaceConfigResponse
-    create_modele_model = WirelessInterfaceCreatePayload
+    create_model = WirelessInterfaceCreatePayload
     update_model = WirelessInterfaceUpdatePayload
 
     delete_reponse_model = WirelessInterfacesDeleteResponse
