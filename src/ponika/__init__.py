@@ -21,6 +21,7 @@ from ponika.endpoints.ip_neighbors import IpNeighborsEndpoint
 from ponika.endpoints.ip_routes import IPRouteEndpoint
 from ponika.endpoints.messages import MessagesEndpoint
 from ponika.endpoints.modems import ModemsEndpoint
+from ponika.endpoints.recipients import RecipientsEndpoint
 from ponika.endpoints.session import SessionEndpoint
 from ponika.endpoints.sms_utilities import SmsUtilitiesEndpoint
 from ponika.endpoints.tailscale import TailscaleEndpoint
@@ -95,6 +96,7 @@ class PonikaClient:
         self.firmware = FirmwareEndpoint(self)
         self.users = UsersEndpoint(self)
         self.data_usage = DataUsageEndpoint(self)
+        self.recipients = RecipientsEndpoint(self)
 
     def _get_auth_token(self) -> Optional[str]:
         """Get the current authentication token."""

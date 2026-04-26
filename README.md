@@ -29,9 +29,10 @@ The compatibility is tested with RUT devices.
 | MQTT | Broker  | ❌ |
 | MQTT | Publisher  | ❌ |
 | OpenVPN |  | ⭕ |
+| Recipient Groups |  | ✅ |
 | SMS | Send | ✅ |
 | SMS | Read/Delete | ✅ |
-| SMS | Command Setup | ⭕ |
+| SMS | Command Setup | ✅ |
 | Tailscale |  | ⚠️ |
 | Usermanagement  | - | ✅ |
 | Wireguard |  | ✅ |
