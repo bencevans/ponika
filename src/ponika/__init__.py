@@ -5,6 +5,7 @@ import urllib3
 from typing import Type, Optional, Dict, Any
 from requests import Response, Session
 from logging import Logger, getLogger
+from ponika.endpoints.auto_reboot import AutoRebootEndpoint
 from ponika.endpoints.backup import BackupEndpoint
 from ponika.endpoints.data_usage import DataUsageEndpoint
 from ponika.endpoints.firmware import FirmwareEndpoint
@@ -21,6 +22,7 @@ from ponika.endpoints.ip_routes import IPRouteEndpoint
 from ponika.endpoints.messages import MessagesEndpoint
 from ponika.endpoints.modems import ModemsEndpoint
 from ponika.endpoints.session import SessionEndpoint
+from ponika.endpoints.sms_utilities import SmsUtilitiesEndpoint
 from ponika.endpoints.tailscale import TailscaleEndpoint
 from ponika.endpoints.unauthorized import UnauthorizedEndpoint
 from ponika.endpoints.wireguard import WireguardEndpoint
@@ -76,9 +78,11 @@ class PonikaClient:
 
         self.unauthorized = UnauthorizedEndpoint(self)
         self.session = SessionEndpoint(self)
+        self.sms_utilities = SmsUtilitiesEndpoint(self)
         self.messages = MessagesEndpoint(self)
         self.gps = GpsEndpoint(self)
         self.backup = BackupEndpoint(self)
+        self.auto_reboot = AutoRebootEndpoint(self)
         self.dhcp = DHCPEndpoint(self)
         self.tailscale = TailscaleEndpoint(self)
         self.wireguard = WireguardEndpoint(self)
@@ -98,7 +102,7 @@ class PonikaClient:
             return self.auth.token
 
         auth_response = self.login(
-            self._config.username, self._config.password
+            username=self._config.username, password=self._config.password
         )
 
         self.auth = (
