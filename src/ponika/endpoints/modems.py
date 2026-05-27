@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, Optional
+from typing import Dict, List, Literal
 from pydantic import BaseModel, Field
 from typing import TYPE_CHECKING
 
@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 
 class ModemsEndpoint:
-    def __init__(self, client: "PonikaClient") -> None:
-        self._client: "PonikaClient" = client
+    def __init__(self, client: 'PonikaClient') -> None:
+        self._client: 'PonikaClient' = client
 
     class GetModemsStatusOffline(BaseModel):
         """Data model for GET /modems/status response when modem is offline."""
@@ -59,7 +59,7 @@ class ModemsEndpoint:
             earfcn: int
             arfcn: str
             uarfcn: str
-            nr_arfcn: str = Field(alias="nr-arfcn")
+            nr_arfcn: str = Field(alias='nr-arfcn')
             rsrp: str
             rsrq: str
             sinr: int
@@ -140,8 +140,8 @@ class ModemsEndpoint:
 
     def get_status(
         self,
-    ) -> "ApiResponse[List[GetModemsStatusOnline | GetModemsStatusOffline]]":
+    ) -> 'ApiResponse[List[GetModemsStatusOnline | GetModemsStatusOffline]]':
         """Fetch global GPS config."""
         return ApiResponse[
             List[self.GetModemsStatusOnline | self.GetModemsStatusOffline]
-        ].model_validate(self._client._get("/modems/status"))
+        ].model_validate(self._client._get('/modems/status'))

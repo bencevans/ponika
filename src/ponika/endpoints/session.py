@@ -8,17 +8,17 @@ if TYPE_CHECKING:
 
 
 class SessionEndpoint:
-    def __init__(self, client: "PonikaClient") -> None:
-        self._client: "PonikaClient" = client
+    def __init__(self, client: 'PonikaClient') -> None:
+        self._client: 'PonikaClient' = client
 
     class SessionResponseData(BaseModel):
         """Data model for session response."""
 
         active: bool
 
-    def get_status(self) -> "ApiResponse[SessionResponseData]":
+    def get_status(self) -> 'ApiResponse[SessionResponseData]':
         """Fetch session information from the device."""
 
         return ApiResponse[self.SessionResponseData].model_validate(
-            self._client._get("/session/status")
+            self._client._get('/session/status')
         )

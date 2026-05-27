@@ -9,26 +9,26 @@ if TYPE_CHECKING:
 
 
 class GpsEndpoint:
-    def __init__(self, client: "PonikaClient") -> None:
-        self._client: "PonikaClient" = client
+    def __init__(self, client: 'PonikaClient') -> None:
+        self._client: 'PonikaClient' = client
         self.position = self.GpsPositionEndpoint(client)
 
     class GetGlobalResponseData(BaseModel):
         """Data model for GET /gps/global response."""
 
-        enabled: Literal["0", "1"]
-        galileo_sup: Literal["0", "1"]
-        glonass_sup: Literal["0", "1"]
-        beidou_sup: Literal["0", "1"]
-        dpo_enabled: Optional[Literal["0", "1"]] = None
-        mode: Optional[Literal["0", "1"]] = None
+        enabled: Literal['0', '1']
+        galileo_sup: Literal['0', '1']
+        glonass_sup: Literal['0', '1']
+        beidou_sup: Literal['0', '1']
+        dpo_enabled: Optional[Literal['0', '1']] = None
+        mode: Optional[Literal['0', '1']] = None
         interval: Optional[str] = None
         timeout: Optional[str] = None
 
-    def get_global(self) -> "ApiResponse[GetGlobalResponseData]":
+    def get_global(self) -> 'ApiResponse[GetGlobalResponseData]':
         """Fetch global GPS config."""
         return ApiResponse[self.GetGlobalResponseData].model_validate(
-            self._client._get("/gps/global")
+            self._client._get('/gps/global')
         )
 
     class GpsStatusResponseData(BaseModel):
@@ -37,15 +37,15 @@ class GpsEndpoint:
         dpo_support: bool
         uptime: int
 
-    def get_status(self) -> "ApiResponse[GpsStatusResponseData]":
+    def get_status(self) -> 'ApiResponse[GpsStatusResponseData]':
         """Fetch GPS status from the device."""
         return ApiResponse[self.GpsStatusResponseData].model_validate(
-            self._client._get("/gps/status")
+            self._client._get('/gps/status')
         )
 
     class GpsPositionEndpoint:
-        def __init__(self, client: "PonikaClient") -> None:
-            self._client: "PonikaClient" = client
+        def __init__(self, client: 'PonikaClient') -> None:
+            self._client: 'PonikaClient' = client
 
         class GpsPositionResponseData(BaseModel):
             """Data model for GET /gps/position/status response."""
@@ -61,9 +61,9 @@ class GpsEndpoint:
             angle: str
             utc_timestamp: str
 
-        def get_status(self) -> "ApiResponse[GpsPositionResponseData]":
+        def get_status(self) -> 'ApiResponse[GpsPositionResponseData]':
             """Fetch GPS position status from the device."""
 
             return ApiResponse[self.GpsPositionResponseData].model_validate(
-                self._client._get("/gps/position/status")
+                self._client._get('/gps/position/status')
             )

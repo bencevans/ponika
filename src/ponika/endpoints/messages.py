@@ -1,51 +1,105 @@
-from typing import List
-from pydantic import BaseModel
-from typing import TYPE_CHECKING
+from datetime import datetime
+from typing import TYPE_CHECKING, List
 
-from ponika.models import ApiResponse
+from ponika.endpoints import Endpoint
+from ponika.exceptions import TeltonikaApiException
+from ponika.models import ApiResponse, BaseModel, BasePayload
 
 if TYPE_CHECKING:
-    from ponika import PonikaClient, ApiResponse
+    from ponika import PonikaClient
 
 
-class MessagesEndpoint:
-    def __init__(self, client: "PonikaClient") -> None:
-        self._client: "PonikaClient" = client
-        self.actions = self.MessagesActionsEndpoint(client)
+class MessagesStatusResponseItem(BaseModel):
+    """Data model for a single message status item."""
 
-    class MessagesResponseDataItem(BaseModel):
-        """Data model for messages response."""
+    message: str
+    sender: str
+    id: str
+    modem_id: str
+    status: str
+    date: datetime
 
-        message: str
-        sender: str
-        id: str
-        modem_id: str
-        status: str
-        date: str
 
-    def get_status(self) -> "ApiResponse[List[MessagesResponseDataItem]]":
+class SendMessagePayload(BasePayload):
+    number: str
+    message: str
+    modem: str
+
+
+class SendMessageResponseData(BaseModel):
+    """Data model for message send action response."""
+
+    sms_used: int
+
+
+class RemoveMessagesPayload(BasePayload):
+    modem_id: str
+    sms_id: List[str]
+
+
+class RemoveMessagesResponseData(BaseModel):
+    """Data model for remove messages action response."""
+
+    response: str
+
+
+class MessagesEndpoint(Endpoint):
+    def __init__(self, client: 'PonikaClient') -> None:
+        super().__init__(client)
+
+    def read(self) -> List[MessagesStatusResponseItem]:
         """Fetch messages from the device."""
-        return ApiResponse[List[self.MessagesResponseDataItem]].model_validate(
+        response_model = ApiResponse[List[MessagesStatusResponseItem]]
+        response = response_model.model_validate(
             self._client._get(
-                "/messages/status",
+                '/messages/status',
             )
         )
 
-    class MessagesActionsEndpoint:
-        def __init__(self, client: "PonikaClient") -> None:
-            self._client: "PonikaClient" = client
+        if not response.success or response.data is None:
+            raise TeltonikaApiException(response.errors)
 
-        class SendResponseData(BaseModel):
-            """Data model for messages action response."""
+        return response.data
 
-            sms_used: int
+    def send(
+        self, number: str, message: str, modem: str
+    ) -> SendMessageResponseData:
+        """Send a message to a recipient."""
+        payload = SendMessagePayload(
+            number=number,
+            message=message,
+            modem=modem,
+        )
 
-        def post_send(
-            self, number: str, message: str, modem: str
-        ) -> "ApiResponse[SendResponseData]":
-            """Send a message to a recipient."""
-            return self._client._post(
-                "/messages/actions/send",
-                self.SendResponseData,
-                {"data": {"number": number, "message": message, "modem": modem}},
-            )
+        response = self._client._post_data(
+            endpoint='/messages/actions/send',
+            data_model=SendMessageResponseData,
+            params=payload,
+        )
+
+        if not response.success or response.data is None:
+            raise TeltonikaApiException(response.errors)
+
+        return response.data
+
+    def remove(
+        self,
+        modem_id: str,
+        sms_ids: List[str],
+    ) -> RemoveMessagesResponseData:
+        """Delete selected SMS messages from a modem."""
+        payload = RemoveMessagesPayload(
+            modem_id=modem_id,
+            sms_id=sms_ids,
+        )
+
+        response = self._client._post_data(
+            endpoint='/messages/actions/remove_messages',
+            data_model=RemoveMessagesResponseData,
+            params=payload,
+        )
+
+        if not response.success or response.data is None:
+            raise TeltonikaApiException(response.errors)
+
+        return response.data
