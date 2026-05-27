@@ -87,6 +87,115 @@ else:
 > [!NOTE]
 > Not all endpoints are implemented. If you need a specific endpoint that's missing, the existing endpoints should be a good reference for how to implement new ones.
 
+## Config State as Code
+
+Ponika can reconcile selected configuration sections declaratively with
+`client.config.apply(...)`. Only the sections included in the configuration are
+managed. For each included section Ponika will:
+
+- create missing entries,
+- update existing entries when one of the defined fields differs,
+- delete existing entries that are not present in the desired configuration.
+
+Only fields defined in the desired configuration are compared. This allows you
+to omit read-only fields or fields that differ between read and write models.
+CRUD endpoints use `id` as the default identifier field and match existing
+entries by `id` or `name` by default.
+
+```python
+from ponika import PonikaClient
+from ponika.config import PonikaConfig, RecipientsConfig
+from ponika.endpoints.recipients.phone_groups import PhoneGroupCreatePayload
+
+
+client = PonikaClient(
+    host="192.168.1.1",
+    username="your_username",
+    password="your_password",
+    verify_tls=False,
+)
+
+result = client.config.apply(
+    PonikaConfig(
+        recipients=RecipientsConfig(
+            phone_groups=[
+                PhoneGroupCreatePayload(
+                    name="Admins",
+                    tel=["+49170123456"],
+                ),
+            ],
+        )
+    )
+)
+
+print("Created:", len(result.created))
+print("Updated:", len(result.updated))
+print("Deleted:", len(result.deleted))
+print("Unchanged:", len(result.unchanged))
+```
+
+To preview the planned changes without writing them to the device, use
+`dry_run=True`. Dry-run mode still reads the current configuration but skips
+create, update and delete requests. The returned `ConfigApplyResult` contains
+the same change summary plus `existing` and `desired` data on each change where
+available.
+
+```python
+preview = client.config.apply(
+    PonikaConfig(
+        recipients=RecipientsConfig(
+            phone_groups=[
+                PhoneGroupCreatePayload(
+                    name="Admins",
+                    tel=["+49170123456"],
+                ),
+            ],
+        )
+    ),
+    dry_run=True,
+)
+
+for change in preview.changes:
+    print(change.action, change.section, change.match_field, change.match_value)
+    print("Existing:", change.existing)
+    print("Desired:", change.desired)
+```
+
+By default, Config as Code deletes existing entries in managed sections when
+they are not present in the desired configuration. If you only want to create
+and update entries, disable that behavior with `delete_unmanaged=False`:
+
+```python
+result = client.config.apply(
+    desired_config,
+    delete_unmanaged=False,
+)
+```
+
+> [!WARNING]
+> Config as Code is intentionally destructive for managed sections: entries in
+> an included section that are not part of the desired state will be deleted.
+> Include only sections you want Ponika to fully manage.
+
+For IDE autocompletion and type checking, prefer `PonikaConfig` and the nested
+section models such as `RecipientsConfig`. A plain dict is also accepted for
+dynamic use cases.
+
+Typed ConfigState-as-Code models are available for all currently reconcilable
+configuration endpoints:
+
+- `AutoRebootConfig`: `scheduler`, `ping_wget`
+- `DhcpConfig`: `static_leases_ipv4`, `static_leases_ipv6`
+- `IpRoutesConfig`: `routes_ipv4`, `routes_ipv6`
+- `RecipientsConfig`: `phone_groups`, `email_users`
+- `SmsUtilitiesConfig`: `rules`
+- `WireguardConfig`: `config`, `peers`
+- `WirelessConfig`: `interfaces`
+- `ZerotierConfig`: `config`, `networks`
+
+Dynamic sub-configurations such as WireGuard peers and ZeroTier networks include
+their parent identifier (`interface_id` or `config_id`) plus an `items` list.
+
 ## Examples
 
 #### Get Internet Status

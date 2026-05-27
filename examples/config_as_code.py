@@ -8,6 +8,28 @@ from ponika.endpoints.sms_utilities.enums import (
 )
 from ponika.endpoints.sms_utilities.rules import SmsRuleCreatePayload
 
+
+def print_changes(preview):
+    print('Planned changes:')
+    for change in preview.changes:
+        print(
+            f'- {change.action.value}: '
+            f'{change.section} {change.match_field}={change.match_value}'
+        )
+        print(f'  Existing: {change.existing}')
+        print(f'  Desired:  {change.desired}')
+
+    result = connection.config.apply(
+        desired_config,
+        delete_unmanaged=False,
+    )
+
+    print(f'Created: {len(result.created)}')
+    print(f'Updated: {len(result.updated)}')
+    print(f'Deleted: {len(result.deleted)}')
+    print(f'Unchanged: {len(result.unchanged)}')
+
+
 smsRuleVpnStatusPayload = SmsRuleCreatePayload()
 smsRuleVpnStatusPayload.enabled = True
 smsRuleVpnStatusPayload.action = SmsRuleAction.VPN_STATUS
@@ -30,14 +52,8 @@ preview = connection.config.apply(
     delete_unmanaged=False,
 )
 
-print('Planned changes:')
-for change in preview.changes:
-    print(
-        f'- {change.action.value}: '
-        f'{change.section} {change.match_field}={change.match_value}'
-    )
-    print(f'  Existing: {change.existing}')
-    print(f'  Desired:  {change.desired}')
+print_changes(preview)
+
 
 result = connection.config.apply(
     desired_config,

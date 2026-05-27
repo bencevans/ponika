@@ -252,6 +252,16 @@ class ConfigApplier:
             if key != 'items'
         }
 
+    def print_changes(self, changes: ConfigApplyResult):
+        print('Planned changes:')
+        for change in changes.changes:
+            print(
+                f'- {change.action.value}: '
+                f'{change.section} {change.match_field}={change.match_value}'
+            )
+            print(f'  Existing: {change.existing}')
+            print(f'  Desired:  {change.desired}')
+
     def apply_endpoint(
         self,
         endpoint: CRUDEndpoint,

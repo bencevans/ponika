@@ -10,7 +10,7 @@ from ponika.models import BaseModel, BasePayload
 
 
 class PhoneGroupBase:
-    name: str
+    name: str | None = None
     tel: List[str] | None = None
 
 

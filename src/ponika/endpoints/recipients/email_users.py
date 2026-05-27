@@ -8,7 +8,7 @@ from ponika.models import BaseModel, BasePayload
 
 
 class EmailUserBase:
-    name: str
+    name: str | None = None
     secure_conn: bool | None = None
     smtp_ip: str | None = None
     smtp_port: str | None = None
