@@ -132,6 +132,26 @@ class PonikaClient:
 
         return ApiResponse[data_model].model_validate(response.json())
 
+    def _put(
+        self,
+        endpoint: str,
+        data_model: Type[T],
+        params: Optional[Dict[str, Any]] = None,
+        auth_required: bool = True,
+    ) -> ApiResponse[T]:
+        self._logger.info("Making PUT request to: %s", endpoint)
+
+        auth_token = self._get_auth_token() if auth_required else None
+
+        response = self._request.put(
+            f"{self._config.base_url}{endpoint}",
+            verify=self._config.verify_tls,
+            json=params,
+            headers=({"Authorization": f"Bearer {auth_token}"} if auth_token else None),
+        )
+
+        return ApiResponse[data_model].model_validate(response.json())
+
     class LoginResponseData(BaseModel):
         """Data model for login response."""
 
