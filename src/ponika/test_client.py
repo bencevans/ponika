@@ -184,3 +184,12 @@ def test_client_modems_get_status():
     )
     assert modems_status_response.success
     assert modems_status_response.data
+
+def test_client_sim_cards_get_config():
+    """Test the SIM cards configuration functionality of the PonikaClient."""
+
+    sim_cards_config_response = device_doesnt_support_skipper(
+        create_client().sim_cards.get_config()
+    )
+    assert sim_cards_config_response.success
+    assert sim_cards_config_response.data
