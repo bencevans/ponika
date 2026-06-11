@@ -15,6 +15,7 @@ from ponika.endpoints.session import SessionEndpoint
 from ponika.endpoints.tailscale import TailscaleEndpoint
 from ponika.endpoints.unauthorized import UnauthorizedEndpoint
 from ponika.endpoints.wireless import WirelessEndpoint
+from ponika.endpoints.sim_cards import SimCardsEndpoint
 from ponika.models import T, ApiResponse, Token
 
 
@@ -74,6 +75,7 @@ class PonikaClient:
         self.ip_routes = IpRoutesEndpoint(self)
         self.ip_neighbors = IpNeighborsEndpoint(self)
         self.modems = ModemsEndpoint(self)
+        self.sim_cards = SimCardsEndpoint(self)
 
     def _get_auth_token(self) -> Optional[str]:
         """Get the current authentication token."""
