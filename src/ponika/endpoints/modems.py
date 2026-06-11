@@ -21,9 +21,9 @@ class ModemsEndpoint:
         name: str
         """Offline modem name."""
 
-        offline: Literal[0, 1]
+        offline: Optional[Literal[0, 1]] = None
 
-        blocked: Literal[0, 1]
+        blocked: Optional[Literal[0, 1]] = None
 
         builtin: bool
 
@@ -56,12 +56,12 @@ class ModemsEndpoint:
             lac: str
             tac: str
             pcid: int
-            earfcn: int
+            earfcn: Optional[int | str] = None
             arfcn: str
             uarfcn: str
-            nr_arfcn: str = Field(alias="nr-arfcn")
-            rsrp: str
-            rsrq: str
+            nr_arfcn: Optional[int | str] = Field(default=None, alias="nr-arfcn")
+            rsrp: Optional[int | str] = None
+            rsrq: Optional[int | str] = None
             sinr: int
             bandwidth: str
 
@@ -125,10 +125,10 @@ class ModemsEndpoint:
 
             band: str
             bandwidth: str
-            sinr: int
-            rsrq: int
-            rsrp: int
-            pcid: int
+            sinr: Optional[int] = None
+            rsrq: Optional[int] = None
+            rsrp: Optional[int] = None
+            pcid: Optional[int] = None
             frequency: int
 
         ca_signal: List[CarrierAggregationSignal] = Field(default_factory=list)
