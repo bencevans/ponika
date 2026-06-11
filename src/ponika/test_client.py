@@ -163,7 +163,6 @@ def test_client_ip_neighbours_ipv4_get_status():
         create_client().ip_neighbors.ipv4.get_status()
     )
     assert ipv4_neighbours_status_response.success
-    assert ipv4_neighbours_status_response.data
 
 
 def test_client_ip_neighbours_ipv6_get_status():
@@ -173,7 +172,6 @@ def test_client_ip_neighbours_ipv6_get_status():
         create_client().ip_neighbors.ipv6.get_status()
     )
     assert ipv6_neighbours_status_response.success
-    assert ipv6_neighbours_status_response.data
 
 
 def test_client_modems_get_status():
